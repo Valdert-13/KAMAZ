@@ -1,3 +1,11 @@
 
 test_task.parquet
 test_task_1.parquet
+.ipynb_checkpoints/test-checkpoint.ipynb
+.ipynb_checkpoints/КАМАЗ 54901-checkpoint.ipynb
+catboost_info/catboost_training.json
+catboost_info/learn/events.out.tfevents
+test.ipynb
+catboost_info/learn_error.tsv
+catboost_info/time_left.tsv
+catboost_info/tmp/cat_feature_index.204a4fec-5ae29c7a-425e9398-fb72e9bf.tmp
