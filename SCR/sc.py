@@ -7,7 +7,7 @@ tqdm.pandas()
 pd.set_option('display.max_columns', None)
 
 
-class Generator_df:
+class Сreate_df:
     """
     Класс создания датафремов на основании Prophet
 
@@ -86,7 +86,7 @@ class Generator_df:
 
         return result
 
-    def data_gen(self, mape: float = 0.16, params: dict = {}):
+    def get_data(self, mape: float = 0.16, params: dict = {}):
         """
         Создание датасета на основании предсказаних Prophet.
 
