@@ -1,15 +1,15 @@
 from pony.orm import *
 from datetime import datetime, timedelta
+import json
 
 db = Database()
 
 class Unit(db.Entity):
+    _table_ = "current_state_vehicle"
     vehicle_id = PrimaryKey(str)
     time = Optional(datetime)
     latitude = Optional(float)
     longitude = Optional(float)
-    # altitude = Optional(float)
-    # speed = Optional(float)
     info = Optional(Json, default={})
 
 
@@ -18,7 +18,7 @@ db.bind('sqlite', 'database.sqlite',  create_db=True) # Заменить дан�
 db.generate_mapping(create_tables=True)
 
 @db_session(serializable = True )
-def update(item, info):
+def update(item):
     """Добовление и обновленние данных в базу данных
     Parameters
     ----------
@@ -28,19 +28,13 @@ def update(item, info):
         Json - c первоночальными данными"""
     vehicle_id = item.vehicle_id
     if Unit.exists(vehicle_id=vehicle_id):
-        if Unit[vehicle_id].time < item.time:
-            if item.time:
-                Unit[vehicle_id].time = item.time
+        if Unit[vehicle_id].time < item.time and item.time is not None:
+            Unit[vehicle_id].time = item.time
+            Unit[vehicle_id].info = json.loads(item.json())
             if item.latitude:
                 Unit[vehicle_id].latitude = item.latitude
             if item.longitude:
                 Unit[vehicle_id].longitude = item.longitude
-            # if item.altitude:
-            #     Unit[vehicle_id].altitude = item.altitude
-            # if item.speed:
-            #     Unit[vehicle_id].speed = item.speed
-            if info:
-                Unit[vehicle_id].info = info
     else:
         Unit(vehicle_id = item.vehicle_id,
              time = datetime.today() - timedelta(days=4))
@@ -48,4 +42,12 @@ def update(item, info):
 
 
 
+@db_session()
+def get_coordinates(vehicle_id):
+    """Запрос на координаты"""
+    if Unit.exists(vehicle_id=vehicle_id):
+        return {'latitude':Unit[vehicle_id].latitude,
+                'longitude': Unit[vehicle_id].longitude}
+    else:
+        return None
 

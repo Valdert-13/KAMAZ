@@ -1,3 +1,6 @@
-kafka-python
+aiokafka
 pydantic
 pony
+uvicorn
+fastapi
+requests

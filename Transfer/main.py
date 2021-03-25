@@ -1,23 +1,24 @@
-import kafka
-import json
+from fastapi import FastAPI
+import uvicorn
+import orm
 from schemas import Item
-from orm import update
-
-KAFKA_HOST = 
-KAFKA_TOPIK = 
-
-consumer = kafka.KafkaConsumer(KAFKA_TOPIK,
-                               bootstrap_servers=[KAFKA_HOST],
-                               fetch_max_bytes = 1_024)
-
-for message in consumer:
-    try:
-        j_item = json.loads(message.value.decode('utf-8'))
-        item = Item(**j_item)
-        update(item, j_item)
-        #print(f'Get {item.vehicle_id}')
-    except:
-        
-        pass
 
 
+
+
+app = FastAPI()
+
+
+@app.get('/get_coordinates')
+def get_coordinates(vehicle_id: str):
+    return orm.get_coordinates(vehicle_id)
+
+@app.get('/add_data')
+async def add_data(msg: Item):
+    orm.update(msg)
+
+
+
+
+if __name__ == '__main__':
+    uvicorn.run('main:app', host="127.0.0.1", port=8000, reload=True)
