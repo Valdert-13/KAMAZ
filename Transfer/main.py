@@ -28,7 +28,7 @@ async def get_coordinates(vehicle_id: str):
     return db_session.get_coordinates(vehicle_id)
 
 
-@app.get('/add_data')
+@app.post('/add_data')
 async def add_data(msg: Item):
     db_session.update(msg)
 
