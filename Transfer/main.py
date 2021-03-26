@@ -1,21 +1,36 @@
 from fastapi import FastAPI
 import uvicorn
-import orm
-from schemas import Item
+from database import db_session
+from database.schemas import Item
+import logging
 
-
-
+logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s',
+                    level=logging.INFO)
+log = logging.getLogger(__name__)
+fh = logging.FileHandler('logging.log')
+fh.setLevel(logging.DEBUG)
+log.addHandler(fh)
 
 app = FastAPI()
 
+@app.on_event("startup")
+async def startup_event():
+    log.info('Initializing API ...')
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    log.info('Shutting down API')
+
 
 @app.get('/get_coordinates')
-def get_coordinates(vehicle_id: str):
-    return orm.get_coordinates(vehicle_id)
+async def get_coordinates(vehicle_id: str):
+    return db_session.get_coordinates(vehicle_id)
+
 
 @app.get('/add_data')
 async def add_data(msg: Item):
-    orm.update(msg)
+    db_session.update(msg)
 
 
 
